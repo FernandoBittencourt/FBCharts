@@ -1,0 +1,58 @@
+function BarChart(){  
+  this.draw=function(dataset){
+
+    var margin = {top: 40, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scaleLinear()
+    .domain([0, dataset.length])
+    .range([0, width]);
+
+    var y = d3.scaleLinear()
+    .domain([0, Math.max.apply(Math, dataset)])
+    .range([0, height]);
+
+    
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("height", height)
+      .attr("width", width);
+
+      //Bars
+      svg.selectAll("rect")
+         .data(dataset)
+         .enter()
+         .append("rect")
+         .attr("x",function(d,i){
+            var j=x(i);
+            return j+margin.left;
+         })
+         .attr("height", function(d){
+            return y(d);
+         })
+         .attr("y", function(d){
+            return height-y(d);
+         })
+          .attr("width", 50)
+          .style("fill","steelblue");
+
+      //Axis
+      var xAxis = d3.axisBottom()
+      .scale(x);
+
+      var yAxis = d3.axisLeft()
+      .scale(y);
+
+
+      svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0,"+height+")")
+      .call(xAxis);
+
+      svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(0,0)")
+      .call(yAxis);
+  }
+}
