@@ -1,11 +1,21 @@
-function BarChart(){  
+BarChart = function(options){ 
+	var self, 
+	defaults={
+		el: "body",
+		width:960,
+		height : 500,
+   		barWidth : 50,
+    		bottom:20
+	};
+	this.settings={};
+	$.extend( this.settings, defaults, options );
   this.draw=function(dataset){
 
     var 
-    width = 960,
-    height = 500,
-    barWidth = 50,
-    bottom=20;
+    width = this.settings.width,
+    height = this.settings.height,
+    barWidth = this.settings.barWidth,
+    bottom=this.settings.bottom;
 
     var x = d3.scaleLinear()
     .domain([0, dataset.length+1])
@@ -35,6 +45,22 @@ function BarChart(){
           .attr("transform", function(d) { 
             return "translate(" + x(d) + ",0)"; 
           });
+
+
+	svg.selectAll("rect")
+          .data(dataset)
+          .enter()
+          .append("rect")
+          .attr("x",-barWidth / 2)
+          .attr("width", barWidth)
+          .attr("height", function(d){
+            return height-y(d);
+           })
+          .attr("y", function(d){return (y(d)-bottom);})
+          .attr("transform", function(d) { 
+            return "translate(" + x(d) + ",0)"; 
+          });
+
 
       //Axis
       var xAxis = d3.axisBottom()
